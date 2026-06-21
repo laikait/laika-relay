@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -8,14 +8,14 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Relay;
+namespace Laika\Relay;
 
 use Closure;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionNamedType;
 use ReflectionParameter;
-use Laika\Core\Exceptions\RelayException;
+use Laika\Relay\Exceptions\RelayException;
 
 /**
  * RelayRegistry — The Laika Service Container.
@@ -149,9 +149,7 @@ class RelayRegistry
             return $this->build($key, []);
         }
 
-        throw new RelayException(
-            "No binding registered for [{$key}]. " .
-            "Register it via RelayRegistry::singleton(), ::bind(), or ::instance()."
+        throw new RelayException("No binding registered for [{$key}]. Register it via RelayRegistry::singleton(), ::bind(), or ::instance()."
         );
     }
 
@@ -214,10 +212,7 @@ class RelayRegistry
             return $ref->newInstanceArgs($resolved);
 
         } catch (ReflectionException $e) {
-            throw new RelayException(
-                "Failed to build [{$concrete}]: {$e->getMessage()}",
-                previous: $e
-            );
+            throw new RelayException("Failed to build [{$concrete}]: {$e->getMessage()}", previous: $e);
         }
     }
 
@@ -288,10 +283,7 @@ class RelayRegistry
                 continue;
             }
 
-            throw new RelayException(
-                "Cannot resolve parameter [\${$param->getName()}] " .
-                "for [{$param->getDeclaringClass()?->getName()}]. " .
-                "Pass it via the \$args array."
+            throw new RelayException("Cannot resolve parameter [\${$param->getName()}] for [{$param->getDeclaringClass()?->getName()}]. Pass it via the \$args array."
             );
         }
 

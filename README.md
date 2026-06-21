@@ -1,1 +1,1 @@
-# laika-relay
+# Laika Framework Relay Service

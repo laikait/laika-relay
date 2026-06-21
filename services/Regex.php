@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,18 +10,18 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service;
+namespace Laika\Service;
 
+use Laika\Relay\Relay;
 use Laika\Core\Regex\Abstracts\Rule;
-use Laika\Core\Relay\Relay;
 
 /**
- * @method static void addRule(Rule $rule)
- * @method static ?Rule getRule(string $name)
- * @method static array getRules()
- * @method static bool validate(string $ruleName, string $input, mixed ...$params)
- * @method static ?array match(string $ruleName, string $input)
- * @method static array checkRules(string $input)
+ * @method static void      addRule(Rule $rule)
+ * @method static ?Rule     getRule(string $name)
+ * @method static array     getRules()
+ * @method static bool      validate(string $ruleName, string $input, mixed ...$params)
+ * @method static ?array    match(string $ruleName, string $input)
+ * @method static array     checkRules(string $input)
  */
 class Regex extends Relay
 {

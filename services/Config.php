@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,16 +10,16 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service;
+namespace Laika\Service;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 
 /**
  * @method static mixed get(string $name, ?string $key = null, mixed $default = null)
  * @method static void  set(string $name, string $key, null|int|string|bool|array $value)
  * @method static bool  has(string $name, ?string $key = null)
- * @method static bool pop(string $name, string $key)
- * @method static bool create(string $name, array $data)
+ * @method static bool  pop(string $name, string $key)
+ * @method static bool  create(string $name, array $data)
  */
 class Config extends Relay
 {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,14 +10,14 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service;
+namespace Laika\Service;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 use Laika\Core\Helper\Date as DateHelper;
 
 /**
- * @method static DateHelper now()
- * @method static DateHelper fromFormat(string $format, string $time, ?string $outputFormat = null, ?string $timezone = null)
+ * @method static DateHelper    now()
+ * @method static DateHelper    fromFormat(string $format, string $time, ?string $outputFormat = null, ?string $timezone = null)
  * @method static DateHelper    parse(string $time, ?string $timezone = null)
  * @method static string        format(?string $format = null)
  * @method static int           getTimestamp()

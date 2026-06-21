@@ -1,7 +1,6 @@
 <?php
-
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -9,9 +8,9 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Relay;
+namespace Laika\Relay;
 
-use Laika\Core\Exceptions\RelayException;
+use Laika\Relay\Exceptions\RelayException;
 
 /**
  * Relay — Static proxy base class for Laika services.
@@ -71,10 +70,7 @@ abstract class Relay
     public static function setRegistry(RelayRegistry $registry): void
     {
         if (isset(self::$registry)) {
-            throw new RelayException(
-                'RelayRegistry has already been set. ' .
-                'Relay::setRegistry() must only be called once during bootstrap.'
-            );
+            throw new RelayException('RelayRegistry has already been set. Relay::setRegistry() must only be called once during bootstrap.');
         }
 
         self::$registry = $registry;
@@ -88,10 +84,7 @@ abstract class Relay
     public static function getRegistry(): RelayRegistry
     {
         if (!isset(self::$registry)) {
-            throw new RelayException(
-                'RelayRegistry has not been set. ' .
-                'Call Relay::setRegistry($registry) during application bootstrap.'
-            );
+            throw new RelayException('RelayRegistry has not been set. Call Relay::setRegistry($registry) during application bootstrap.');
         }
 
         return self::$registry;

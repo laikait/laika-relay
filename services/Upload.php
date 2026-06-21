@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,14 +10,14 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service;
+namespace Laika\Service;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 
 /**
- * @method static static init(array $fields)
- * @method static string|false single(string $directory, ?string $name = null, array $options = [])
- * @method static array multiple(string $destinationDir, array $options = [])
+ * @method static static        init(array $fields)
+ * @method static string|false  single(string $directory, ?string $name = null, array $options = [])
+ * @method static array         multiple(string $destinationDir, array $options = [])
  */
 class Upload extends Relay
 {

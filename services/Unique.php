@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,12 +10,12 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service;
+namespace Laika\Service;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 
 /**
- * @method static string generate(string $pattern, string $prefix = '', string $suffix = '')
+ * @method static string    generate(string $pattern, string $prefix = '', string $suffix = '')
  */
 class Unique extends Relay
 {

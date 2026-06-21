@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,21 +10,21 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service;
+namespace Laika\Service;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 
 /**
- * @method static static setKey(string $key)
- * @method static static setTtl(int $ttl)
- * @method static string generate()
- * @method static string get()
- * @method static string refresh()
- * @method static string reset()
- * @method static string field()
- * @method static bool is_valid()
+ * @method static static    setKey(string $key)
+ * @method static static    setTtl(int $ttl)
+ * @method static string    generate()
+ * @method static string    get()
+ * @method static string    refresh()
+ * @method static string    reset()
+ * @method static string    field()
+ * @method static bool      is_valid()
  */
-class Csrf extends Relay
+class CSRF extends Relay
 {
     protected static function getRelayAccessor(): string
     {

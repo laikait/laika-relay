@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Relay\Providers;
+namespace Laika\Relay\Relays;
 
 use Laika\Core\IP\IP;
 use Laika\Core\Api\Api;
@@ -37,7 +37,6 @@ use Laika\Core\Helper\Config;
 use Laika\Core\Helper\Cookie;
 use Laika\Core\Helper\Client;
 use Laika\Core\Helper\Upload;
-use Laika\Core\Http\ChangeLog;
 use Laika\Core\Template\Asset;
 use Laika\Core\Generator\Token;
 use Laika\Core\Helper\Sendmail;
@@ -61,7 +60,7 @@ use Laika\Core\Template\Meta as TplMeta;
  *   - date     → Laika\Core\Helper\Date
  *   - csrf     → Laika\Core\Csrf\Csrf
  */
-class CoreServiceProvider extends RelayProvider
+class CoreRelays extends RelayProvider
 {
     public function register(): void
     {
@@ -95,7 +94,6 @@ class CoreServiceProvider extends RelayProvider
         $this->registry->singleton('redirect', Redirect::class);
         $this->registry->singleton('response', Response::class);
         $this->registry->singleton('option', OptionModel::class);
-        $this->registry->singleton('changelog', ChangeLog::class);
         $this->registry->singleton('directory', Directory::class);
         $this->registry->singleton('template.asset', Asset::class);
         $this->registry->singleton('template.meta', TplMeta::class);
@@ -105,7 +103,6 @@ class CoreServiceProvider extends RelayProvider
 
     public function boot(): void
     {
-        // Register Error Handler
         Handler::register();
     }
 }

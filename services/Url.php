@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,26 +10,26 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service;
+namespace Laika\Service;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 
 /**
- * @method static string current()
- * @method static string base()
- * @method static string directory()
- * @method static string path()
- * @method static array queries()
- * @method static ?string query(string $key, ?string $default = null)
- * @method static string build(string $path, array $params = [])
- * @method static ?string segment(int $index)
- * @method static ?array segments()
- * @method static string withQuery(array $params)
- * @method static string withoutQuery(array $keys)
- * @method static string incrementQuery(?string $key = null)
- * @method static string decrementQuery(?string $key = null)
- * @method static bool isHttps()
- * @method static string scheme()
+ * @method static string    current()
+ * @method static string    base()
+ * @method static string    directory()
+ * @method static string    path()
+ * @method static array     queries()
+ * @method static ?string   query(string $key, ?string $default = null)
+ * @method static string    build(string $path, array $params = [])
+ * @method static ?string   segment(int $index)
+ * @method static ?array    segments()
+ * @method static string    withQuery(array $params)
+ * @method static string    withoutQuery(array $keys)
+ * @method static string    incrementQuery(?string $key = null)
+ * @method static string    decrementQuery(?string $key = null)
+ * @method static bool      isHttps()
+ * @method static string    scheme()
  */
 class Url extends Relay
 {

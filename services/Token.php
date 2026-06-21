@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,18 +10,18 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service;
+namespace Laika\Service;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 
 /**
- * @method static void setTtl(int $ttl)
- * @method static string generate(?array $user = null)
- * @method static bool validateToken(?string $token)
- * @method static bool check()
- * @method static ?array user()
- * @method static void flush()
- * @method static ?string refresh(string $token)
+ * @method static void      setTtl(int $ttl)
+ * @method static string    generate(?array $user = null)
+ * @method static bool      validateToken(?string $token)
+ * @method static bool      check()
+ * @method static ?array    user()
+ * @method static void      flush()
+ * @method static ?string   refresh(string $token)
  */
 class Token extends Relay
 {

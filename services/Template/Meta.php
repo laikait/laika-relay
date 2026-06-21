@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,9 +10,9 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service\Template;
+namespace Laika\Service\Template;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 
 /**
  * @method static void add(string $name, string $content, string $type = 'name')

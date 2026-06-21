@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,19 +10,19 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service;
+namespace Laika\Service;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 
 /**
- * @method static string userAgent()
- * @method static ?string ip()
- * @method static string language()
- * @method static string os()
- * @method static string browser()
- * @method static string deviceType()
- * @method static bool isBot()
- * @method static array info()
+ * @method static string    userAgent()
+ * @method static ?string   ip()
+ * @method static string    language()
+ * @method static string    os()
+ * @method static string    browser()
+ * @method static string    deviceType()
+ * @method static bool      isBot()
+ * @method static array     info()
  */
 class Visitor extends Relay
 {

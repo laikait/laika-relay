@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Relay;
+namespace Laika\Relay;
 
 /**
  * RelayProvider — Base class for registering services into the Laika container.

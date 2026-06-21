@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,18 +10,18 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service;
+namespace Laika\Service;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 
 /**
- * @method static static setAllowedOrigin(string $origin = '*')
- * @method static static setMessage(string $message)
- * @method static string getContentType()
- * @method static string getMethod()
- * @method static array body()
- * @method static string bearerToken()
- * @method static never send(array $payload, int $status = 200, array $additional = [])
+ * @method static static    setAllowedOrigin(string $origin = '*')
+ * @method static static    setMessage(string $message)
+ * @method static string    getContentType()
+ * @method static string    getMethod()
+ * @method static array     body()
+ * @method static string    bearerToken()
+ * @method static never     send(array $payload, int $status = 200, array $additional = [])
  */
 class Api extends Relay
 {

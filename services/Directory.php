@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,17 +10,17 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service;
+namespace Laika\Service;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 
 /**
  * @method static array folders(string $path)
  * @method static array files(string $path, string|array $ext = '*')
- * @method static bool exists(string $path)
- * @method static bool make(string $path, int $permissions = 0755, bool $recursive = true)
- * @method static bool pop(string $path)
- * @method static bool empty(string $path)
+ * @method static bool  exists(string $path)
+ * @method static bool  make(string $path, int $permissions = 0755, bool $recursive = true)
+ * @method static bool  pop(string $path)
+ * @method static bool  empty(string $path)
  * @method static array scan(string $path, bool $includeDirs = true, string|array $ext = '*')
  */
 class Directory extends Relay

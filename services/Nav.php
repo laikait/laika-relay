@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika PHP MVC Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -10,15 +10,17 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Service;
+namespace Laika\Service;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
+use Laika\Core\Nav\Builder;
+use Laika\Core\Nav\Helper\Item;
 
 /**
- * @method static \Laika\Core\Nav\Helper\Item add(string $title, string $url, bool $display = true)
- * @method static \Laika\Core\Nav\Helper\Item child(string $title, string $url, bool $display = true)
- * @method static \Laika\Core\Nav\Helper\Item|\Laika\Core\Nav\Builder end()
- * @method static string render(string $class = 'navbar')
+ * @method static Item          add(string $title, string $url, bool $display = true)
+ * @method static Item          child(string $title, string $url, bool $display = true)
+ * @method static Item|Builder  end()
+ * @method static string        render(string $class = 'navbar')
  */
 class Nav extends Relay
 {

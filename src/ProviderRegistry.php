@@ -1,6 +1,6 @@
 <?php
 /**
- * Laika Framework
+ * Laika Framework Relay Service
  * Author: Showket Ahmed
  * Email: riyadhtayf@gmail.com
  * License: MIT
@@ -8,9 +8,9 @@
 
 declare(strict_types=1);
 
-namespace Laika\Core\Relay;
+namespace Laika\Relay;
 
-use Laika\Core\Exceptions\RelayException;
+use Laika\Relay\Exceptions\RelayException;
 
 /**
  * ProviderRegistry — Manages the loading and booting of RelayProviders.
@@ -80,16 +80,11 @@ class ProviderRegistry
         // Resolve string to instance
         if (is_string($provider)) {
             if (!class_exists($provider)) {
-                throw new RelayException(
-                    "RelayProvider [{$provider}] class not found. " .
-                    "Ensure the package is installed and autoloaded."
-                );
+                throw new RelayException("RelayProvider [{$provider}] class not found. Ensure the package is installed and autoloaded.");
             }
 
             if (!is_subclass_of($provider, RelayProvider::class)) {
-                throw new RelayException(
-                    "[{$provider}] must extend Laika\\Core\\Relay\\RelayProvider."
-                );
+                throw new RelayException("[{$provider}] must extend Laika\\Relay\\RelayProvider.");
             }
 
             $provider = new $provider($this->registry);

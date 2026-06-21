@@ -556,7 +556,7 @@ Extend `Relay`, implement `getRelayAccessor()`, and document every proxied metho
 
 declare(strict_types=1);
 
-namespace Laika\Core\Relay\Relays;
+namespace Laika\Relay\Relays;
 
 use Laika\Relay\Relay;
 
@@ -747,7 +747,7 @@ All errors throw `Laika\Relay\Exceptions\RelayException`.
 | Unresolvable constructor parameter | `Cannot resolve parameter [$name] for [ClassName].` |
 | Method not found on resolved instance | `Method [method] does not exist on [ClassName].` |
 | RelayProvider class not found | `RelayProvider [ClassName] class not found.` |
-| Provider does not extend RelayProvider | `[ClassName] must extend Laika\Core\Relay\RelayProvider.` |
+| Provider does not extend RelayProvider | `[ClassName] must extend Laika\Relay\RelayProvider.` |
 
 ---
 

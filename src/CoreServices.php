@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace Laika\Relay\Relays;
+namespace Laika\Relay;
 
 use Laika\Core\IP\IP;
 use Laika\Core\Api\Api;
@@ -60,7 +60,7 @@ use Laika\Core\Template\Meta as TplMeta;
  *   - date     → Laika\Core\Helper\Date
  *   - csrf     → Laika\Core\Csrf\Csrf
  */
-class CoreRelays extends RelayProvider
+class CoreServices extends RelayProvider
 {
     public function register(): void
     {

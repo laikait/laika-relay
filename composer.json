@@ -1,0 +1,38 @@
+{
+    "name": "laikait/laika-relay",
+    "description": "Laika PHP Framework Relay Service",
+    "type": "package",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Laika\\Relay\\": "src/",
+            "Laika\\Service\\": "services/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Laika IT",
+            "email": "strblackhawk@gmail.com"
+        },
+        {
+            "name":"Showket Ahmed",
+            "email":"riyadhtayf@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=8.1"
+    },
+    "prefer-stable": true,
+    "scripts": {
+        "test": [
+            "@php vendor/bin/phpunit --configuration phpunit.xml.dist --colors=always --testdox"
+        ],
+        "lint": "php-cs-fixer fix --dry-run --diff"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

@@ -60,7 +60,7 @@ use Laika\Core\Template\Meta as TplMeta;
  *   - date     → Laika\Core\Helper\Date
  *   - csrf     → Laika\Core\Csrf\Csrf
  */
-class CoreServices extends RelayProvider
+class CoreProviders extends RelayProvider
 {
     public function register(): void
     {

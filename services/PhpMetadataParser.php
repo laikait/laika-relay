@@ -10,18 +10,17 @@
 
 declare(strict_types=1);
 
-namespace Laika\Service\Template;
+namespace Laika\Service;
 
 use Laika\Relay\Relay;
 
 /**
- * @method static void add(string $name, string $content, string $type = 'name')
- * @method static void print()
+ * @method static array parse(string $file)
  */
-class Meta extends Relay
+class PhpMetadataParser extends Relay
 {
     protected static function getRelayAccessor(): string
     {
-        return 'template.meta';
+        return 'php.metadata.parser';
     }
 }

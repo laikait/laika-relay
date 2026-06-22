@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Laika\Service\Template;
+namespace Laika\Service;
 
 use Laika\Relay\Relay;
 

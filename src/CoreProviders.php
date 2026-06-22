@@ -22,7 +22,6 @@ use Laika\Core\Helper\Date;
 use Laika\Core\Nav\Builder;
 use Laika\Core\Http\Header;
 use Laika\Core\Http\Response;
-use Laika\Core\Helper\Meta;
 use Laika\Core\Helper\Page;
 use Laika\Core\Helper\Hook;
 use Laika\Core\Helper\Math;
@@ -33,6 +32,7 @@ use Laika\Core\Helper\Image;
 use Laika\Core\Helper\Local;
 use Laika\Core\Helper\Vault;
 use Laika\Core\Http\Redirect;
+use Laika\Core\Template\Meta;
 use Laika\Core\Helper\Config;
 use Laika\Core\Helper\Cookie;
 use Laika\Core\Helper\Client;
@@ -44,8 +44,7 @@ use Laika\Core\Helper\Directory;
 use Laika\Core\Generator\Unique;
 use Laika\Core\Model\OptionModel;
 use Laika\Core\Exceptions\Handler;
-use Laika\Core\Relay\RelayProvider;
-use Laika\Core\Template\Meta as TplMeta;
+use Laika\Core\Helper\PhpMetadataParser;
 
 /**
  * CoreServiceProvider — Registers all built-in Laika core services.
@@ -70,7 +69,6 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('url', Url::class);
         $this->registry->singleton('api', Api::class);
         $this->registry->singleton('date', Date::class);
-        $this->registry->singleton('meta', Meta::class);
         $this->registry->singleton('page', Page::class);
         $this->registry->singleton('hook', Hook::class);
         $this->registry->singleton('math', Math::class);
@@ -96,7 +94,8 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('option', OptionModel::class);
         $this->registry->singleton('directory', Directory::class);
         $this->registry->singleton('template.asset', Asset::class);
-        $this->registry->singleton('template.meta', TplMeta::class);
+        $this->registry->singleton('template.meta', Meta::class);
+        $this->registry->singleton('php.metadata.parser', PhpMetadataParser::class);
         $this->registry->singleton('staff.auth', Auth::class, ['guard' => 'staff']);
         $this->registry->singleton('client.auth', Auth::class, ['guard' => 'client']);
     }

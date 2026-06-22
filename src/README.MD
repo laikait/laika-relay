@@ -1,4 +1,4 @@
-# Laika Relay — Service Container & Static Proxy
+# Laika Framework Relay (Service Container & Static Proxy)
 
 **Relay** is the service container and static proxy system built for the [Laika Framework](https://github.com/laikait/laika-framework). It gives you a lightweight dependency injection container (`RelayRegistry`), a clean static proxy base (`Relay`), and a two-phase provider system (`RelayProvider` + `ProviderRegistry`) that lets third-party packages register their own services into the framework.
 
@@ -62,28 +62,57 @@ There are three independent pieces:
 
 ---
 
-## File Structure
+## File Structure & Default Services
 
 ```
-src/
-└── Relay/
-    ├── Relay.php                       # Abstract base — extend to create a proxy
-    ├── RelayRegistry.php               # The container
-    ├── RelayProvider.php             # Abstract base for service providers
-    ├── ProviderRegistry.php            # Manages provider loading and booting
-    ├── Exceptions/
-    │   └── RelayException.php          # All Relay errors throw this
-    ├── Providers/
-    │   └── CoreRelayProvider.php     # Registers built-in Laika services
-    └── Relays/
-        ├── Auth.php
-        ├── Config.php
-        ├── Session.php
-        ├── Date.php
-        └── Csrf.php
+services/       # NAMESPACE: Laika\Service
+└── Template/
+    ├── Asset.php                       # HTML Template Asset Relay Class Container
+    ├── Meta.php                        # HTML Template Meta Relay Class Container
+└── Activity.php                        # Activity Relay Class Container
+└── Api.php                             # Api Relay Class Container
+└── ClientAuth.php                      # ClientAuth Relay Class Container
+└── Config.php                          # Config Relay Class Container
+└── Cookie.php                          # Cookie Relay Class Container
+└── CSRF.php                            # CSRF Relay Class Container
+└── Date.php                            # Date Relay Class Container
+└── DB.php                              # DB Relay Class Container
+└── Directory.php                       # Directory Relay Class Container
+└── Email.php                           # Email Relay Class Container
+└── File.php                            # File Relay Class Container
+└── Hook.php                            # Hook Relay Class Container
+└── Image.php                           # Image Relay Class Container
+└── Infra.php                           # Infra Relay Class Container
+└── IP.php                              # IP Relay Class Container
+└── Local.php                           # Local Relay Class Container
+└── Math.php                            # Math Relay Class Container
+└── Meta.php                            # Meta Relay Class Container (Get Class Container Comments)
+└── Nav.php                             # Nav Relay Class Container
+└── Option.php                          # Option Relay Class Container
+└── Page.php                            # Page Relay Class Container
+└── Redirect.php                        # Redirect Relay Class Container
+└── Regex.php                           # Regex Relay Class Container
+└── Request.php                         # Request Relay Class Container
+└── Response.php                        # Response Relay Class Container
+└── StaffAuth.php                       # StaffAuth Relay Class Container
+└── Token.php                           # Token Relay Class Container
+└── Unique.php                          # Unique Relay Class Container
+└── Upload.php                          # Upload Relay Class Container
+└── Url.php                             # Url Relay Class Container
+└── Vault.php                           # Vault Relay Class Container
+└── Visitor.php                         # Visitor Relay Class Container
+
+src/            # NAMESPACE: Laika\Relay
+└── Exceptions/
+    ├── RelayException.php              # Exception Class
+└── Relay.php                           # Abstract base — extend to create a proxy
+└── RelayRegistry.php                   # The container
+└── RelayProvider.php                   # Abstract base for service providers
+└── ProviderRegistry.php                # Manages provider loading and booting
+└── README.MD                # Manages provider loading and booting
 ```
 
-> `Relays/` is a convention, not a requirement. Relay classes can live anywhere.
+> `services/` [`Laika\Service\*`] is a convention, not a requirement. Relay classes can live anywhere.
 
 ---
 
@@ -92,7 +121,7 @@ src/
 The container. All services are registered here before the application starts handling requests.
 
 ```php
-use Laika\Core\Relay\RelayRegistry;
+use Laika\Relay\RelayRegistry;
 
 $registry = new RelayRegistry();
 ```
@@ -289,7 +318,7 @@ The integration point for packages. Extend `RelayProvider` and implement `regist
 
 namespace YourPackage;
 
-use Laika\Core\Relay\RelayProvider;
+use Laika\Relay\RelayProvider;
 
 class YourRelayProvider extends RelayProvider
 {
@@ -342,18 +371,14 @@ public function boot(): void
     $gateway = $this->registry->make('payment');
     $gateway->setApiKey($config->get('payment.stripe_key'));
 
-    // ✅ Register middleware
-    $router = $this->registry->make('router');
-    $router->middleware('payment.verified', PaymentVerifiedMiddleware::class);
-
     // ✅ Attach event listeners
     $events = $this->registry->make('events');
     $events->listen('order.placed', SendPaymentRequestListener::class);
 
     // ✅ Register routes
-    $router->group('/payment', function () use ($router) {
-        $router->post('/charge',  'PaymentController@charge');
-        $router->post('/webhook', 'PaymentController@webhook');
+    Http::group('/payment', function () {
+        Http::post('/charge',  'PaymentController@charge');
+        Http::post('/webhook', 'PaymentController@webhook');
     });
 }
 ```
@@ -378,7 +403,7 @@ public function boot(): void
 Manages the full provider lifecycle. Register providers in any order — the two-phase approach guarantees correctness.
 
 ```php
-use Laika\Core\Relay\ProviderRegistry;
+use Laika\Relay\ProviderRegistry;
 
 $providers = new ProviderRegistry($registry);
 
@@ -409,10 +434,10 @@ Complete application bootstrap sequence:
 ```php
 <?php
 
-use Laika\Core\Relay\Relay;
-use Laika\Core\Relay\RelayRegistry;
-use Laika\Core\Relay\ProviderRegistry;
-use Laika\Core\Relay\Providers\CoreRelayProvider;
+use Laika\Relay\Relay;
+use Laika\Relay\RelayRegistry;
+use Laika\Relay\ProviderRegistry;
+use Laika\Relay\Relays\CoreRelayProvider;
 
 // 1. Build the container
 $registry  = new RelayRegistry();
@@ -460,20 +485,20 @@ This is how an external package integrates with Laika.
 
 namespace Acme\LaikaPayment;
 
-use Laika\Core\Relay\RelayProvider;
+use Laika\Relay\RelayProvider;
 
 class PaymentRelayProvider extends RelayProvider
 {
     public function register(): void
     {
         $this->registry->singleton('payment',         PaymentGateway::class);
-        $this->registry->singleton('payment.webhook', WebhookHandler::class);
-        $this->registry->bind('payment.invoice',      Invoice::class);
+        $this->registry->singleton('payment_webhook', WebhookHandler::class);
+        $this->registry->bind('payment_invoice',      Invoice::class);
     }
 
     public function boot(): void
     {
-        $key = $this->registry->make('config')->get('payment.stripe_key');
+        $key = $this->registry->make('config')->get('stripe_key');
         $this->registry->make('payment')->setApiKey($key);
     }
 }
@@ -486,7 +511,7 @@ class PaymentRelayProvider extends RelayProvider
 
 namespace Acme\LaikaPayment\Relay;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 
 /**
  * @method static string charge(int $amount, string $currency)
@@ -500,22 +525,6 @@ class Payment extends Relay
         return 'payment';
     }
 }
-```
-
-### 3. User adds provider to `config/app.php`
-
-```php
-'providers' => [
-    Acme\LaikaPayment\PaymentRelayProvider::class,
-],
-```
-
-### 4. User calls it like any built-in service
-
-```php
-use Acme\LaikaPayment\Relay\Payment;
-
-Payment::charge(1000, 'USD');
 ```
 
 ### Full flow
@@ -547,9 +556,9 @@ Extend `Relay`, implement `getRelayAccessor()`, and document every proxied metho
 
 declare(strict_types=1);
 
-namespace Laika\Core\Relay\Relays;
+namespace Laika\Relay\Relays;
 
-use Laika\Core\Relay\Relay;
+use Laika\Relay\Relay;
 
 /**
  * @method static bool   attempt(array $credentials)
@@ -576,8 +585,8 @@ class Auth extends Relay
 - FQCNs or short names both work (short names require `use`).
 
 ```php
-use Laika\Core\Nav\Helper\Item;
-use Laika\Core\Nav\Builder;
+use Laika\Nav\Helper\Item;
+use Laika\Nav\Builder;
 
 /**
  * @method static Item|Builder  end()
@@ -594,12 +603,13 @@ Import the **Relay class**, not the underlying service class.
 
 ```php
 // ✅ Correct — imports the Relay proxy
-use Laika\Core\Relay\Relays\Auth;
-use Laika\Core\Relay\Relays\Config;
-use Laika\Core\Relay\Relays\Session;
+use Laika\Service\StaffAuth;
+use Laika\Service\ClientAuth;
+use Laika\Service\Config;
+...
 
 if (Auth::check()) {
-    $name = Config::get('app.name');
+    $name = Config::get('app', 'name');
     Session::set('last_page', '/dashboard');
 }
 ```
@@ -653,10 +663,10 @@ Use `swap()` to replace the resolved instance for a specific Relay — for examp
 ```php
 <?php
 
-namespace Laika\Core\Middleware;
+namespace App\Middleware;
 
 use Laika\Core\Auth\Auth as AuthService;
-use Laika\Core\Relay\Relays\Auth;
+use Laika\Service\Auth;
 
 class AdminMiddleware
 {
@@ -682,7 +692,7 @@ Relay::getRegistry()->singleton('auth', AuthService::class, ['admin', 'admins'])
 ### Inject a mock for one test
 
 ```php
-use Laika\Core\Relay\Relays\Auth;
+use Laika\Service\Auth;
 
 protected function setUp(): void
 {
@@ -706,8 +716,8 @@ public function test_dashboard_requires_auth(): void
 ### Replace the entire registry for full isolation
 
 ```php
-use Laika\Core\Relay\Relay;
-use Laika\Core\Relay\RelayRegistry;
+use Laika\Relay\Relay;
+use Laika\Relay\RelayRegistry;
 
 protected function setUp(): void
 {
@@ -726,7 +736,7 @@ protected function setUp(): void
 
 ## Exceptions
 
-All errors throw `Laika\Core\Relay\Exceptions\RelayException`.
+All errors throw `Laika\Relay\Exceptions\RelayException`.
 
 | Situation | Message |
 |---|---|
@@ -737,13 +747,13 @@ All errors throw `Laika\Core\Relay\Exceptions\RelayException`.
 | Unresolvable constructor parameter | `Cannot resolve parameter [$name] for [ClassName].` |
 | Method not found on resolved instance | `Method [method] does not exist on [ClassName].` |
 | RelayProvider class not found | `RelayProvider [ClassName] class not found.` |
-| Provider does not extend RelayProvider | `[ClassName] must extend Laika\Core\Relay\RelayProvider.` |
+| Provider does not extend RelayProvider | `[ClassName] must extend Laika\Relay\RelayProvider.` |
 
 ---
 
 ## License
 
-MIT — see [LICENSE](../../LICENSE) for details.
+MIT — see [LICENSE](LICENSE) for details.
 
 **Author:** Showket Ahmed
 **Email:** riyadhtayf@gmail.com

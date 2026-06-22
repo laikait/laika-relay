@@ -105,11 +105,12 @@ services/       # NAMESPACE: Laika\Service
 src/            # NAMESPACE: Laika\Relay
 └── Exceptions/
     ├── RelayException.php              # Exception Class
-└── Relays/
-    ├── Relay.php                       # Abstract base — extend to create a proxy
-    ├── RelayRegistry.php               # The container
-    ├── RelayProvider.php               # Abstract base for service providers
-    └── ProviderRegistry.php            # Manages provider loading and booting
+
+└── Relay.php                           # Abstract base — extend to create a proxy
+└── RelayRegistry.php                   # The container
+└── RelayProvider.php                   # Relay Provider
+└── ProviderRegistry.php                # Manages provider loading and booting
+└── CoreProviders.php                    # Core Services Container
 ```
 
 > `services/` [`Laika\Service\*`] is a convention, not a requirement. Relay classes can live anywhere.

@@ -19,8 +19,8 @@ use Laika\Relay\Relay;
  * CLASS: Laika\Core\Helper\DB
  * 
  * @method static void  run(?string $name = null)
- * @method static PDO   connection(string $name = 'default')
- * @method static void  session(string $name = 'default')
+ * @method static PDO   getConnection(?string $name = null)
+ * @method static void  session(?string $name = null)
  */
 class DB extends Relay
 {

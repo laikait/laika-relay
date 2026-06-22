@@ -15,12 +15,13 @@ namespace Laika\Service;
 use Laika\Relay\Relay;
 
 /**
- * @method static array info(string $file)
+ * @method static void add(string $name, string $content, string $type = 'name')
+ * @method static void print()
  */
 class Meta extends Relay
 {
     protected static function getRelayAccessor(): string
     {
-        return 'meta';
+        return 'template.meta';
     }
 }

@@ -39,6 +39,7 @@ use Laika\Core\Helper\Client;
 use Laika\Core\Helper\Upload;
 use Laika\Core\Template\Asset;
 use Laika\Core\Generator\Token;
+use Laika\Core\Helper\MimeType;
 use Laika\Core\Helper\Sendmail;
 use Laika\Core\Helper\Directory;
 use Laika\Core\Generator\Unique;
@@ -81,6 +82,7 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('vault', Vault::class);
         $this->registry->singleton('image', Image::class);
         $this->registry->singleton('local', Local::class);
+        $this->registry->singleton('mime', MimeType::class);
         $this->registry->singleton('config', Config::class);
         $this->registry->singleton('cookie', Cookie::class);
         $this->registry->singleton('unique', Unique::class);

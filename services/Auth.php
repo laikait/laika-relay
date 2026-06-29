@@ -15,6 +15,7 @@ namespace Laika\Service;
 use Laika\Relay\Relay;
 
 /**
+ * @method static static    guard(string $guard)
  * @method static static    setLifetime(int $ttl)
  * @method static string    login(int $userId, array $userData)
  * @method static bool      check()
@@ -22,13 +23,14 @@ use Laika\Relay\Relay;
  * @method static array     data()
  * @method static ?array    user()
  * @method static ?int      id()
- * @method static string    guard()
+ * @method static string    type()
  * @method static void      logout()
+ * @method static void      deleteExpired()
  */
-class StaffAuth extends Relay
+class Auth extends Relay
 {
     protected static function getRelayAccessor(): string
     {
-        return 'staff.auth';
+        return 'auth';
     }
 }

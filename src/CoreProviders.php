@@ -39,6 +39,7 @@ use Laika\Core\Helper\Client;
 use Laika\Core\Helper\Upload;
 use Laika\Core\Template\Asset;
 use Laika\Core\Generator\Token;
+use Laika\Core\Helper\MimeType;
 use Laika\Core\Helper\Sendmail;
 use Laika\Core\Helper\Directory;
 use Laika\Core\Generator\Unique;
@@ -74,6 +75,7 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('math', Math::class);
         $this->registry->singleton('file', File::class);
         $this->registry->singleton('csrf', CSRF::class);
+        $this->registry->singleton('auth', Auth::class);
         $this->registry->singleton('regex', Regex::class);
         $this->registry->singleton('infra', Infra::class);
         $this->registry->singleton('token', Token::class);
@@ -81,6 +83,7 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('vault', Vault::class);
         $this->registry->singleton('image', Image::class);
         $this->registry->singleton('local', Local::class);
+        $this->registry->singleton('mime', MimeType::class);
         $this->registry->singleton('config', Config::class);
         $this->registry->singleton('cookie', Cookie::class);
         $this->registry->singleton('unique', Unique::class);
@@ -96,8 +99,6 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('template.asset', Asset::class);
         $this->registry->singleton('template.meta', Meta::class);
         $this->registry->singleton('php.metadata.parser', PhpMetadataParser::class);
-        $this->registry->singleton('staff.auth', Auth::class, ['guard' => 'staff']);
-        $this->registry->singleton('client.auth', Auth::class, ['guard' => 'client']);
     }
 
     public function boot(): void

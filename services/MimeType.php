@@ -15,20 +15,16 @@ namespace Laika\Service;
 use Laika\Relay\Relay;
 
 /**
- * @method static static    setLifetime(int $ttl)
- * @method static string    login(int $userId, array $userData)
- * @method static bool      check()
- * @method static bool      guest()
- * @method static array     data()
- * @method static ?array    user()
- * @method static ?int      id()
- * @method static string    guard()
- * @method static void      logout()
+ * @method static void      register(string $extension, string $mimeType)
+ * @method static string    get(string $extension)
+ * @method static string    fromFile(string $filename)
+ * @method static string    fromContent(string $content)
+ * @method static array     all()
  */
-class ClientAuth extends Relay
+class MimeType extends Relay
 {
     protected static function getRelayAccessor(): string
     {
-        return 'client.auth';
+        return 'mime';
     }
 }

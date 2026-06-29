@@ -19,6 +19,7 @@ use Laika\Relay\Relay;
  * @method static string    base()
  * @method static string    directory()
  * @method static string    path()
+ * @method static int       port()
  * @method static array     queries()
  * @method static ?string   query(string $key, ?string $default = null)
  * @method static string    build(string $path, array $params = [])

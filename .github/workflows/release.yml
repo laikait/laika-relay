@@ -2,8 +2,12 @@ name: Version Release
 
 on:
   push:
+    branches:
+      - beta
     tags:
       - 'v*.*.*'
+
+  workflow_dispatch:
 
 jobs:
   release:

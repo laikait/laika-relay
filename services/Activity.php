@@ -17,7 +17,7 @@ use Laika\Relay\Relay;
 /**
  * @method static static    author(?string $type = null, ?int $id = null)
  * @method static static    log(string $log)
- * @method static void      event(string $event)
+ * @method static void      event(string $event, array $changelog = [])
  * @method static array     events(?string $event = null)
  * @method static int       insert(?string $connection = null)
  * @method static array     changelog(array $existing)

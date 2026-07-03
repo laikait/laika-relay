@@ -25,8 +25,6 @@ use Laika\Relay\Relay;
  * @method static ?string   getHeader(string $name)
  * @method static array     getHeaders()
  * @method static static    removeHeader(string $name)
- * @method static ?string   requestHeader(string $name)
- * @method static array     requestHeaders()
  * @method static static    body(mixed $body)
  * @method static mixed     getBody()
  * @method static static    json(mixed $data, int $status = 200)

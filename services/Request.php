@@ -17,7 +17,7 @@ use Laika\Relay\Relay;
 /**
  * @method static string    method()
  * @method static array     headers()
- * @method static ?string   header(string $key)
+ * @method static ?string   header(string $name)
  * @method static bool      isPost()
  * @method static bool      isGet()
  * @method static bool      isPut()

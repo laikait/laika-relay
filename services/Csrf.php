@@ -15,15 +15,13 @@ namespace Laika\Service;
 use Laika\Relay\Relay;
 
 /**
- * @method static static    setKey(string $key)
- * @method static static    setTtl(int $ttl)
+ * @method static void      setTtl(int $ttl)
+ * @method static void      bindFingerprint(bool $bind = true)
  * @method static string    generate()
  * @method static string    token()
- * @method static string    key()
- * @method static string    refresh()
- * @method static string    reset()
- * @method static string    field()
- * @method static bool      is_valid()
+ * @method static bool      validate(?string $token)
+ * @method static ?string   fromRequest(string $header = 'X-Csrf-Token')
+ * @method static void      field()
  */
 class CSRF extends Relay
 {

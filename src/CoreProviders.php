@@ -12,12 +12,12 @@ namespace Laika\Relay;
 
 use Laika\Core\IP\IP;
 use Laika\Core\Api\Api;
+use Laika\Core\Http\CSRF;
 use Laika\Core\Auth\Auth;
 use Laika\Core\Helper\DB;
 use Laika\Core\App\Infra;
 use Laika\Core\Helper\Url;
 use Laika\Core\Helper\File;
-use Laika\Core\Helper\CSRF;
 use Laika\Core\Helper\Date;
 use Laika\Core\Nav\Builder;
 use Laika\Core\Http\Header;

@@ -41,6 +41,7 @@ use Laika\Core\Template\Asset;
 use Laika\Core\Generator\Token;
 use Laika\Core\Helper\MimeType;
 use Laika\Core\Helper\Sendmail;
+use Laika\Core\Template\Context;
 use Laika\Core\Helper\Directory;
 use Laika\Core\Generator\Unique;
 use Laika\Core\Model\OptionModel;
@@ -95,9 +96,10 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('redirect', Redirect::class);
         $this->registry->singleton('response', Response::class);
         $this->registry->singleton('option', OptionModel::class);
+        $this->registry->singleton('template.meta', Meta::class);
         $this->registry->singleton('directory', Directory::class);
         $this->registry->singleton('template.asset', Asset::class);
-        $this->registry->singleton('template.meta', Meta::class);
+        $this->registry->singleton('template.context', Context::class);
         $this->registry->singleton('php.metadata.parser', PhpMetadataParser::class);
     }
 

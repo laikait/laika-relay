@@ -16,7 +16,7 @@ use Laika\Relay\Relay;
 
 /**
  * @method static void      register(string $extension, string $mimeType)
- * @method static string    get(string $extension)
+ * @method static string    fromExtension(string $extension)
  * @method static string    fromFile(string $filename)
  * @method static string    fromContent(string $content)
  * @method static array     all()

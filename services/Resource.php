@@ -15,20 +15,13 @@ namespace Laika\Service;
 use Laika\Relay\Relay;
 
 /**
- * @method static array getModelClasses()
- * @method static array getSchemaClasses()
- * @method static array getControllerClasses()
- * @method static array getPipelineClasses()
- * @method static array getFilterClasses()
- * @method static array getTemplateNames()
- * @method static array getRelayClasses()
- * @method static array getFunctionFiles()
- * @method static array getHookFiles()
+ * @method static void  register(string $name, string $path, ?string $base_namespace = null)
+ * @method static array getResources(?string $name = null)
  */
-class Infra extends Relay
+class Resource extends Relay
 {
     protected static function getRelayAccessor(): string
     {
-        return 'infra';
+        return 'resource';
     }
 }

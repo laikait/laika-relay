@@ -13,6 +13,7 @@ namespace Laika\Relay;
 use Laika\Core\IP\IP;
 use Laika\Core\Api\Api;
 use Laika\Core\Http\CSRF;
+use Laika\Core\Http\CORS;
 use Laika\Core\Auth\Auth;
 use Laika\Core\Helper\DB;
 use Laika\Core\App\Infra;
@@ -21,7 +22,6 @@ use Laika\Core\Helper\File;
 use Laika\Core\Helper\Date;
 use Laika\Core\Nav\Builder;
 use Laika\Core\Http\Header;
-use Laika\Core\Http\Response;
 use Laika\Core\Helper\Page;
 use Laika\Core\Helper\Hook;
 use Laika\Core\Helper\Math;
@@ -31,6 +31,8 @@ use Laika\Core\Http\Request;
 use Laika\Core\Helper\Image;
 use Laika\Core\Helper\Local;
 use Laika\Core\Helper\Vault;
+use Laika\Core\App\Resource;
+use Laika\Core\Http\Response;
 use Laika\Core\Http\Redirect;
 use Laika\Core\Template\Meta;
 use Laika\Core\Helper\Config;
@@ -76,6 +78,7 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('math', Math::class);
         $this->registry->singleton('file', File::class);
         $this->registry->singleton('csrf', CSRF::class);
+        $this->registry->singleton('cors', CORS::class);
         $this->registry->singleton('auth', Auth::class);
         $this->registry->singleton('regex', Regex::class);
         $this->registry->singleton('infra', Infra::class);
@@ -92,6 +95,7 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('email', Sendmail::class);
         $this->registry->singleton('visitor', Client::class);
         $this->registry->singleton('request', Request::class);
+        $this->registry->singleton('resource', Resource::class);
         $this->registry->singleton('activity', Activity::class);
         $this->registry->singleton('redirect', Redirect::class);
         $this->registry->singleton('response', Response::class);
@@ -105,6 +109,7 @@ class CoreProviders extends RelayProvider
 
     public function boot(): void
     {
+        // Register Error Handler
         Handler::register();
     }
 }

@@ -15,7 +15,6 @@ namespace Laika\Service;
 use Laika\Relay\Relay;
 
 /**
- * @method static void      setDefaultHeaders()
  * @method static static    setStatus(int $code)
  * @method static int       getStatus()
  * @method static static    setContentType(string $type)

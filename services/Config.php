@@ -16,6 +16,7 @@ use Laika\Relay\Relay;
 
 /**
  * @method static mixed get(string $name, ?string $key = null, mixed $default = null)
+ * @method static array all()
  * @method static void  set(string $name, string $key, null|int|string|bool|array $value)
  * @method static bool  has(string $name, ?string $key = null)
  * @method static bool  pop(string $name, string $key)

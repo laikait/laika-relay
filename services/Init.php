@@ -18,14 +18,15 @@ use Laika\Relay\Relay;
 /**
  * CLASS: Laika\Core\Helper\DB
  * 
- * @method static void  run(?string $name = null)
- * @method static PDO   getConnection(?string $name = null)
- * @method static void  session(?string $name = null)
+ * @method static void  db(?string $name = null)
+ * @method static void  dbSession(?string $name = null)
+ * @method static void  fileSession(array $params = [])
+ * @method static void  default(?string $connection = null)
  */
-class DB extends Relay
+class Init extends Relay
 {
     protected static function getRelayAccessor(): string
     {
-        return 'db';
+        return 'init';
     }
 }

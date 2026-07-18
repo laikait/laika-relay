@@ -15,7 +15,7 @@ use Laika\Core\Api\Api;
 use Laika\Core\Http\CSRF;
 use Laika\Core\Http\CORS;
 use Laika\Core\Auth\Auth;
-use Laika\Core\Helper\DB;
+use Laika\Core\Helper\Init;
 use Laika\Core\App\Infra;
 use Laika\Core\Helper\Url;
 use Laika\Core\Helper\File;
@@ -68,10 +68,10 @@ class CoreProviders extends RelayProvider
     public function register(): void
     {
         // Register Each Core Service As A Singleton.
-        $this->registry->singleton('db', DB::class);
         $this->registry->singleton('ip', IP::class);
         $this->registry->singleton('url', Url::class);
         $this->registry->singleton('api', Api::class);
+        $this->registry->singleton('init', Init::class);
         $this->registry->singleton('date', Date::class);
         $this->registry->singleton('page', Page::class);
         $this->registry->singleton('hook', Hook::class);

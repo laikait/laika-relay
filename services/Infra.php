@@ -24,6 +24,7 @@ use Laika\Relay\Relay;
  * @method static array getRelayClasses()
  * @method static array getFunctionFiles()
  * @method static array getHookFiles()
+ * @method static array getRouteFiles()
  */
 class Infra extends Relay
 {

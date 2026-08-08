@@ -17,6 +17,7 @@ use Laika\Relay\Relay;
 /**
  * @method static array getModelClasses()
  * @method static array getSchemaClasses()
+ * @method static array getQueueJobsClasses()
  * @method static array getControllerClasses()
  * @method static array getPipelineClasses()
  * @method static array getFilterClasses()

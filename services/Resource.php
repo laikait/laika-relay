@@ -15,8 +15,23 @@ namespace Laika\Service;
 use Laika\Relay\Relay;
 
 /**
- * @method static void  register(string $name, string $path, ?string $base_namespace = null)
- * @method static array getResources(?string $name = null)
+ * @method static void   register(string $name, string $path, ?string $base_namespace = null, ?string $contract = null)
+ * @method static void   define(\Laika\Core\App\ResourceDefinition $definition)
+ * @method static void   package(string $composer_file)
+ * @method static array  getResources(?string $name = null)
+ * @method static array  getClasses(string $name, ?string $contract = null)
+ * @method static array  getFiles(string $name)
+ * @method static array  names()
+ * @method static bool   has(string $name)
+ * @method static bool   isClassMap(string $name)
+ * @method static array  entries(\Laika\Core\App\ResourceDefinition $definition)
+ * @method static array  definitions(?string $name = null)
+ * @method static string manifestPath()
+ * @method static array  compile()
+ * @method static string cache(?string $file = null)
+ * @method static bool   loadManifest(?string $file = null)
+ * @method static void   isolate()
+ * @method static void   flush(?string $name = null)
  */
 class Resource extends Relay
 {

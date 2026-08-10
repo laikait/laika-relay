@@ -15,8 +15,8 @@
             "email": "strblackhawk@gmail.com"
         },
         {
-            "name":"Showket Ahmed",
-            "email":"riyadhtayf@gmail.com"
+            "name": "Showket Ahmed",
+            "email": "riyadhtayf@gmail.com"
         }
     ],
     "minimum-stability": "stable",
@@ -28,11 +28,17 @@
         "test": [
             "@php vendor/bin/phpunit --configuration phpunit.xml.dist --colors=always --testdox"
         ],
-        "lint": "php-cs-fixer fix --dry-run --diff"
+        "lint": "php-cs-fixer fix --dry-run --diff",
+        "compat": "phpcs --standard=phpcs.xml --report=full"
     },
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^4.0.2",
+        "phpcompatibility/php-compatibility": "dev-develop",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.1"
     }
 }

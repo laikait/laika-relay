@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Laika\Relay;
 
 use Laika\Core\IP\IP;
+use Laika\Core\App\Key;
 use Laika\Core\Api\Api;
 use Laika\Core\Http\CSRF;
 use Laika\Core\Http\CORS;
@@ -87,6 +88,7 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('vault', Vault::class);
         $this->registry->singleton('image', Image::class);
         $this->registry->singleton('local', Local::class);
+        $this->registry->singleton('app.key', Key::class);
         $this->registry->singleton('mime', MimeType::class);
         $this->registry->singleton('config', Config::class);
         $this->registry->singleton('cookie', Cookie::class);

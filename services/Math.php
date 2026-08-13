@@ -44,6 +44,7 @@ use Laika\Relay\Relay;
  * @method static bool      isGte(int|float|string $a, int|float|string $b)
  * @method static bool      isLte(int|float|string $a, int|float|string $b)
  * @method static string    trim(int|float|string $a)
+ * @method static void      scale(int $scale)
  */
 class Math extends Relay
 {

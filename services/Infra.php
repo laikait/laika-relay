@@ -15,6 +15,7 @@ namespace Laika\Service;
 use Laika\Relay\Relay;
 
 /**
+ * @method static array get(string $name, ?string $contract = null)
  * @method static array getModelClasses()
  * @method static array getSchemaClasses()
  * @method static array getQueueJobsClasses()

@@ -26,7 +26,7 @@ use Laika\Relay\Relay;
  * @method static string        base(string $file)
  * @method static string        path(string $file)
  * @method static string|false  read(string $file)
- * @method static bool          write(string $content, string $file)
+ * @method static bool          write(string $content, string $file, int $flags = 0)
  * @method static bool          append(string $str, string $file)
  * @method static bool          pop(string $file)
  * @method static bool          move(string $from, string $to)

@@ -21,6 +21,7 @@ use Laika\Core\Nav\Helper\Item;
  * @method static Item          child(string $title, string $url, bool $display = true)
  * @method static Item|Builder  end()
  * @method static string        render(string $class = 'navbar')
+ * @method static array         items()
  */
 class Nav extends Relay
 {

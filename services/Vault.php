@@ -26,6 +26,7 @@ use Laika\Relay\Relay;
  * @method static bool      verifyPassword(string $password, string $hash)
  * @method static bool      needsRehash(string $hash)
  * @method static string    sign(string $text)
+ * @method static string    verify(string $signed)
  * @method static string    token(int $length = 32)
  * @method static string    numericOtp(int $digits = 6)
  */

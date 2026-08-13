@@ -111,6 +111,8 @@ class CoreProviders extends RelayProvider
 
     public function boot(): void
     {
+        // Set Default Timezone to UTC
+        $this->registry->make('date')->setAppTimezone('UTC');
         // Register Error Handler
         Handler::register();
     }

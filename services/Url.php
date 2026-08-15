@@ -31,6 +31,7 @@ use Laika\Relay\Relay;
  * @method static string    decrementQuery(?string $key = null)
  * @method static bool      isHttps()
  * @method static string    scheme()
+ * @method static string    host()
  */
 class Url extends Relay
 {

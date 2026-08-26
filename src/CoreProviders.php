@@ -12,10 +12,8 @@ namespace Laika\Relay;
 
 use Laika\Core\IP\IP;
 use Laika\Core\App\Key;
-use Laika\Core\Api\Api;
 use Laika\Core\Http\CSRF;
 use Laika\Core\Http\CORS;
-use Laika\Core\Auth\Auth;
 use Laika\Core\Helper\Init;
 use Laika\Core\App\Infra;
 use Laika\Core\Helper\Url;
@@ -60,7 +58,6 @@ use Laika\Core\Helper\PhpMetadataParser;
  * Services registered:
  *   - config   → Laika\Core\Helper\Config
  *   - session  → Laika\Core\Session\Session
- *   - auth     → Laika\Core\Auth\Auth
  *   - date     → Laika\Core\Helper\Date
  *   - csrf     → Laika\Core\Csrf\Csrf
  */
@@ -71,7 +68,6 @@ class CoreProviders extends RelayProvider
         // Register Each Core Service As A Singleton.
         $this->registry->singleton('ip', IP::class);
         $this->registry->singleton('url', Url::class);
-        $this->registry->singleton('api', Api::class);
         $this->registry->singleton('init', Init::class);
         $this->registry->singleton('date', Date::class);
         $this->registry->singleton('page', Page::class);
@@ -80,7 +76,6 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('file', File::class);
         $this->registry->singleton('csrf', CSRF::class);
         $this->registry->singleton('cors', CORS::class);
-        $this->registry->singleton('auth', Auth::class);
         $this->registry->singleton('regex', Regex::class);
         $this->registry->singleton('infra', Infra::class);
         $this->registry->singleton('token', Token::class);

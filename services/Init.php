@@ -12,16 +12,17 @@ declare(strict_types=1);
 
 namespace Laika\Service;
 
-use PDO;
 use Laika\Relay\Relay;
 
 /**
- * CLASS: Laika\Core\Helper\DB
- * 
- * @method static void  db(?string $name = null)
- * @method static void  dbSession(?string $name = null)
- * @method static void  fileSession(array $params = [])
- * @method static void  default(?string $connection = null)
+ * CLASS: Laika\Core\Helper\Init
+ *
+ * @method static void db(?string $name = null)
+ * @method static void file(array $params = [])
+ * @method static void model(?string $name = null, bool $install = false)
+ * @method static void mysql(?string $name = null, array $params = [])
+ * @method static void redis(array $params = [])
+ * @method static void memcached(array $params = [])
  */
 class Init extends Relay
 {

@@ -80,14 +80,17 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('token', Token::class);
         $this->registry->singleton('nav', Builder::class);
         $this->registry->singleton('vault', Vault::class);
-        $this->registry->singleton('image', Image::class);
+        // Not a singleton: Image carries a GD handle and Upload a pending
+        // $_FILES entry, so a shared instance handed every caller the same
+        // half-used object. Bound per-resolution instead.
+        $this->registry->bind('image', Image::class);
         $this->registry->singleton('local', Local::class);
         $this->registry->singleton('app.key', Key::class);
         $this->registry->singleton('mime', MimeType::class);
         $this->registry->singleton('config', Config::class);
         $this->registry->singleton('cookie', Cookie::class);
         $this->registry->singleton('unique', Unique::class);
-        $this->registry->singleton('upload', Upload::class);
+        $this->registry->bind('upload', Upload::class);
         $this->registry->singleton('visitor', Client::class);
         $this->registry->singleton('request', Request::class);
         $this->registry->singleton('resource', Resource::class);

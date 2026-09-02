@@ -17,14 +17,14 @@ use Laika\Core\Nav\Builder;
 use Laika\Core\Nav\Helper\Item;
 
 /**
- * @method static Item    add(string $title, string $named, array $namedParams = [], bool $display = true)
+ * @method static Item      add(string $title, string $named, array $namedParams = [], bool $display = true)
  * @method static Item|null find(string $name)
- * @method static Builder extend(string $name, callable $callback)
- * @method static Builder configure(array $config)
- * @method static Builder current(?string $url)
- * @method static string  render(string $class = 'navbar')
- * @method static Item[]  items()
- * @method static Builder flush()
+ * @method static Builder   extend(string $name, callable $callback)
+ * @method static Builder   configure(array $config)
+ * @method static Builder   current(?string $url)
+ * @method static string    render(string $class = 'navbar')
+ * @method static Item[]    items()
+ * @method static Builder   flush()
  */
 class Nav extends Relay
 {

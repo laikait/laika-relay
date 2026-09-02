@@ -19,6 +19,7 @@ use Laika\Core\App\Infra;
 use Laika\Core\Helper\Url;
 use Laika\Core\Helper\File;
 use Laika\Core\Helper\Date;
+use Laika\Core\Nav\Builder;
 use Laika\Core\Http\Header;
 use Laika\Core\Helper\Page;
 use Laika\Core\Helper\Hook;
@@ -77,6 +78,7 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('regex', Regex::class);
         $this->registry->singleton('infra', Infra::class);
         $this->registry->singleton('token', Token::class);
+        $this->registry->singleton('nav', Builder::class);
         $this->registry->singleton('vault', Vault::class);
         // Not a singleton: Image carries a GD handle and Upload a pending
         // $_FILES entry, so a shared instance handed every caller the same

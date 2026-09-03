@@ -39,6 +39,7 @@ use Laika\Core\Helper\Config;
 use Laika\Core\Helper\Cookie;
 use Laika\Core\Helper\Client;
 use Laika\Core\Helper\Upload;
+use Laika\Core\Generator\Icon;
 use Laika\Core\Template\Asset;
 use Laika\Core\Generator\Token;
 use Laika\Core\Helper\MimeType;
@@ -77,6 +78,7 @@ class CoreProviders extends RelayProvider
         $this->registry->singleton('file', File::class);
         $this->registry->singleton('csrf', CSRF::class);
         $this->registry->singleton('cors', CORS::class);
+        $this->registry->singleton('icon', Icon::class);
         $this->registry->singleton('regex', Regex::class);
         $this->registry->singleton('infra', Infra::class);
         $this->registry->singleton('token', Token::class);

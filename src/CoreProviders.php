@@ -33,6 +33,7 @@ use Laika\Core\Helper\Vault;
 use Laika\Core\App\Resource;
 use Laika\Core\Http\Response;
 use Laika\Core\Http\Redirect;
+use Laika\Core\Generator\Uid;
 use Laika\Core\Template\Meta;
 use Laika\Core\Helper\Config;
 use Laika\Core\Helper\Cookie;
@@ -66,6 +67,7 @@ class CoreProviders extends RelayProvider
     {
         // Register Each Core Service As A Singleton.
         $this->registry->singleton('ip', IP::class);
+        $this->registry->singleton('uid', Uid::class);
         $this->registry->singleton('url', Url::class);
         $this->registry->singleton('init', Init::class);
         $this->registry->singleton('date', Date::class);

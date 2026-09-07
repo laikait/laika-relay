@@ -88,13 +88,13 @@ class CoreProviders extends RelayProvider
         // $_FILES entry, so a shared instance handed every caller the same
         // half-used object. Bound per-resolution instead.
         $this->registry->bind('image', Image::class);
+        $this->registry->bind('upload', Upload::class);
         $this->registry->singleton('local', Local::class);
         $this->registry->singleton('app.key', Key::class);
         $this->registry->singleton('mime', MimeType::class);
         $this->registry->singleton('config', Config::class);
         $this->registry->singleton('cookie', Cookie::class);
         $this->registry->singleton('unique', Unique::class);
-        $this->registry->bind('upload', Upload::class);
         $this->registry->singleton('visitor', Client::class);
         $this->registry->singleton('request', Request::class);
         $this->registry->singleton('resource', Resource::class);

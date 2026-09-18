@@ -21,6 +21,7 @@ use Laika\Relay\Relay;
  * @method static bool  has(string $name, ?string $key = null)
  * @method static bool  pop(string $name, string $key)
  * @method static bool  create(string $name, array $data)
+ * @method static void  flush()
  */
 class Config extends Relay
 {

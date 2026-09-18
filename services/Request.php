@@ -35,6 +35,7 @@ use Laika\Relay\Relay;
  * @method static void      addBulkError(array $errors)
  * @method static void      addError(string $key, string $error)
  * @method static array     errors()
+ * @method static static flushHeaders()
  */
 class Request extends Relay
 {

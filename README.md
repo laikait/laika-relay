@@ -1,36 +1,32 @@
-# Laika Framework Relay (Service Container & Static Proxy)
+# Laika Relay
 
-**Relay** is the service container and static proxy system built for the [Laika Framework](https://github.com/laikait/laika-framework). It gives you a lightweight dependency injection container (`RelayRegistry`), a clean static proxy base (`Relay`), and a two-phase provider system (`RelayProvider` + `ProviderRegistry`) that lets third-party packages register their own services into the framework.
+The service container and static-proxy layer of the [Laika PHP MVC Framework](https://github.com/laikait/laika-framework).
 
-> Part of `laikait/laika-core` · Requires PHP 8.1+
+| Class | Role |
+|---|---|
+| `Laika\Relay\RelayRegistry` | The container: holds bindings, auto-wires constructors, caches instances |
+| `Laika\Relay\Relay` | Base class for **relays**: static classes that forward every call to a bound service |
+| `Laika\Relay\RelayProvider` | Base class for **providers**, which bind services into the registry |
+| `Laika\Relay\ProviderRegistry` | Runs providers in two phases: every `register()`, then every `boot()` |
+| `Laika\Relay\CoreProviders` | The provider that binds laika-core's services (requires laika-core) |
+
+The package also ships the framework's own relays in `services/`, namespace `Laika\Service`: `Config`, `Request`, `Response`, `Url`, `Vault`, `Visitor` and the rest.
+
+Requires PHP 8.1+.
 
 ---
 
 ## Table of Contents
 
 - [How It Works](#how-it-works)
-- [File Structure](#file-structure)
+- [Inside a Laika App](#inside-a-laika-app)
 - [RelayRegistry](#relayregistry)
-  - [instance()](#instance)
-  - [singleton()](#singleton)
-  - [bind()](#bind)
-  - [make()](#make)
-  - [has()](#has)
-  - [forgetInstance()](#forgetinstance)
-  - [Lifetime Comparison](#lifetime-comparison)
 - [Auto-Wiring](#auto-wiring)
-- [RelayProvider](#RelayProvider)
-  - [register()](#register)
-  - [boot()](#boot)
-  - [register() vs boot()](#register-vs-boot)
+- [RelayProvider](#relayprovider)
 - [ProviderRegistry](#providerregistry)
-- [Bootstrap](#bootstrap)
-- [Third-Party Integration](#third-party-integration)
-- [Relay — The Static Proxy](#relay--the-static-proxy)
-  - [Creating a Relay Class](#creating-a-relay-class)
-  - [Using a Relay](#using-a-relay)
-  - [Method Chaining](#method-chaining)
-  - [Switching Instances at Runtime](#switching-instances-at-runtime)
+- [Standalone Bootstrap](#standalone-bootstrap)
+- [Shipping Services From a Package](#shipping-services-from-a-package)
+- [Relays](#relays)
 - [Testing](#testing)
 - [Exceptions](#exceptions)
 
@@ -39,87 +35,40 @@
 ## How It Works
 
 ```
-Your Code
+Request::input('email')                   ← relay (static call)
+    │  __callStatic
+    ▼
+RelayRegistry::make('request')            ← container (builds once, caches)
     │
     ▼
-Auth::check()                    ← Relay proxy  (static call)
-    │
-    ▼
-RelayRegistry::make('auth')      ← Container    (resolves & caches)
-    │
-    ▼
-Laika\Core\Auth\Auth::check()    ← Real class   (real method)
+Laika\Core\Http\Request->input('email')   ← the real instance
 ```
 
-There are three independent pieces:
-
-| Class | Role |
-|---|---|
-| `RelayRegistry` | The container. Holds bindings, resolves and caches instances. |
-| `Relay` | Abstract base. Forwards static calls to the resolved instance. |
-| `RelayProvider` | Integration point. Packages extend this to register services. |
-| `ProviderRegistry` | Manages provider lifecycle — calls `register()` then `boot()`. |
+A relay keeps no state of its own. Every call asks the registry, so `swap()`, `forgetInstance()` and re-binding take effect immediately.
 
 ---
 
-## File Structure & Default Services
+## Inside a Laika App
 
-```
-services/       # NAMESPACE: Laika\Service
-└── Template/
-    ├── Asset.php                       # HTML Template Asset Relay Class Container
-    ├── Meta.php                        # HTML Template Meta Relay Class Container
-└── Activity.php                        # Activity Relay Class Container
-└── Api.php                             # Api Relay Class Container
-└── ClientAuth.php                      # ClientAuth Relay Class Container
-└── Config.php                          # Config Relay Class Container
-└── Cookie.php                          # Cookie Relay Class Container
-└── CSRF.php                            # CSRF Relay Class Container
-└── Date.php                            # Date Relay Class Container
-└── DB.php                              # DB Relay Class Container
-└── Directory.php                       # Directory Relay Class Container
-└── Email.php                           # Email Relay Class Container
-└── File.php                            # File Relay Class Container
-└── Hook.php                            # Hook Relay Class Container
-└── Image.php                           # Image Relay Class Container
-└── Infra.php                           # Infra Relay Class Container
-└── IP.php                              # IP Relay Class Container
-└── Local.php                           # Local Relay Class Container
-└── Math.php                            # Math Relay Class Container
-└── Meta.php                            # Meta Relay Class Container (Get Class Container Comments)
-└── Nav.php                             # Nav Relay Class Container
-└── Option.php                          # Option Relay Class Container
-└── Page.php                            # Page Relay Class Container
-└── Redirect.php                        # Redirect Relay Class Container
-└── Regex.php                           # Regex Relay Class Container
-└── Request.php                         # Request Relay Class Container
-└── Response.php                        # Response Relay Class Container
-└── StaffAuth.php                       # StaffAuth Relay Class Container
-└── Token.php                           # Token Relay Class Container
-└── Unique.php                          # Unique Relay Class Container
-└── Upload.php                          # Upload Relay Class Container
-└── Url.php                             # Url Relay Class Container
-└── Vault.php                           # Vault Relay Class Container
-└── Visitor.php                         # Visitor Relay Class Container
+laika-core builds the container in its `helpers/loader.php`. You don't call any of this yourself:
 
-src/            # NAMESPACE: Laika\Relay
-└── Exceptions/
-    ├── RelayException.php              # Exception Class
+1. `CoreProviders` registers the core services. `php laika relay:list` prints every key and its class.
+2. Providers declared by packages register next, then the app's own providers in `lf-app/Relay/`. Binding is last-write-wins, so an app provider can override a core or package service by binding the same key.
+3. `Relay::setRegistry()` connects the relays.
+4. Every provider's `boot()` runs.
+5. The router is given `RelayRegistry::make()` as its resolver, so controllers, pipelines and filters get constructor injection.
 
-└── Relay.php                           # Abstract base — extend to create a proxy
-└── RelayRegistry.php                   # The container
-└── RelayProvider.php                   # Relay Provider
-└── ProviderRegistry.php                # Manages provider loading and booting
-└── CoreProviders.php                    # Core Services Container
+To add a service to an app:
+
+```bash
+php laika service:make --name=Billing --class=App\\Support\\Billing
 ```
 
-> `services/` [`Laika\Service\*`] is a convention, not a requirement. Relay classes can live anywhere.
+This writes a provider to `lf-app/Relay/` and a relay to `lf-app/Service/`. Both are discovered automatically. See [Services & Relays](https://github.com/laikait/laika-framework/blob/main/docs/07_services-and-relay/01_basic.md) in the framework docs.
 
 ---
 
 ## RelayRegistry
-
-The container. All services are registered here before the application starts handling requests.
 
 ```php
 use Laika\Relay\RelayRegistry;
@@ -127,594 +76,293 @@ use Laika\Relay\RelayRegistry;
 $registry = new RelayRegistry();
 ```
 
----
+### Registering
 
-### `instance()`
+| Method | Instances | Built |
+|---|---|---|
+| `singleton(string $key, Closure\|string $concrete, array $args = []): static` | One, shared | On the first `make()`, then cached |
+| `bind(string $key, Closure\|string $concrete, array $args = []): static` | A new one per `make()` | Every time |
+| `instance(string $key, object $instance): static` | The object you pass | Already built |
 
-Register an **already-constructed object** directly.
-
-```php
-$registry->instance(string $key, object $instance): static
-```
-
-The registry stores exactly the object you give it — it never calls `new`. The object is available immediately on `make()`.
+`$concrete` is either a class name, which is [auto-wired](#auto-wiring), or a closure called as `$concrete($registry, ...$args)`:
 
 ```php
-$pdo = new PDO($dsn, $user, $pass);
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// Class name, auto-wired
+$registry->singleton('billing', \App\Support\Billing::class);
 
-$registry->instance('db', $pdo);
+// Class name with values the container can't resolve (by name or position)
+$registry->singleton('mailer', \App\Support\Mailer::class, ['driver' => 'smtp']);
+
+// Closure factory
+$registry->singleton('mailer', fn (RelayRegistry $r) => new \Laika\Mailman\Mailer(config('mail')));
+
+// Interface → implementation
+$registry->singleton(\App\Contracts\PaymentGateway::class, \App\Support\StripeGateway::class);
+
+// A fresh object on every make()
+$registry->bind('upload', \Laika\Core\Helper\Upload::class);
+
+// An object you already have
+$registry->instance('clock', new \App\Support\FrozenClock('2025-01-01'));
 ```
 
-Use when the object already exists before the registry is set up, or when construction has side effects that must be controlled manually.
+Prefer `singleton()` for most services. It's lazy: nothing is built until something asks for it.
 
----
+> **A class without a public constructor can't be auto-wired.** Binding such a class by name fails on `make()` with "Failed to build". Bind a closure that returns the instance instead, for example `fn () => ShieldConfig::instance()`.
 
-### `singleton()`
-
-Register a **singleton binding** — built once on the first `make()` call, then cached and reused for the lifetime of the request.
+### Resolving
 
 ```php
-$registry->singleton(string $key, Closure|string $concrete, array $args = []): static
+$billing = $registry->make('billing');
 ```
 
-```php
-// Class string — no args needed
-$registry->singleton('session', Session::class);
+`make(string $key): object` checks, in order:
 
-// Class string — with primitive args (positional)
-$registry->singleton('mailer', Mailer::class, ['smtp']);
+1. an instance (from `instance()`, or a singleton already built);
+2. a singleton binding: build it, cache it, return it;
+3. a `bind()` binding: build and return a new one;
+4. the key itself, if it's an existing class name: auto-wire it (not cached);
+5. otherwise, throw `RelayException`.
 
-// Class string — with primitive args (named)
-$registry->singleton('queue', DatabaseDriver::class, [
-    'table'   => 'async_jobs',
-    'retries' => 3,
-]);
+### Other Methods
 
-// Closure — manual control, receives the registry
-$registry->singleton('db', function (RelayRegistry $r) {
-    $config = $r->make('config');
-    $pdo    = new PDO(
-        $config->get('db.dsn'),
-        $config->get('db.user'),
-        $config->get('db.pass')
-    );
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    return $pdo;
-});
-
-// Closure — conditional factory
-$registry->singleton('cache', function (RelayRegistry $r) {
-    return match ($r->make('config')->get('cache.driver')) {
-        'redis' => new RedisCache(),
-        'file'  => new FileCache(),
-        default => new ArrayCache(),
-    };
-});
-```
-
-Use for stateful services shared across the entire request: session, auth, config, mailer, cache.
-
----
-
-### `bind()`
-
-Register a **transient binding** — a brand-new instance is created on every `make()` call. Nothing is ever cached.
-
-```php
-$registry->bind(string $key, Closure|string $concrete, array $args = []): static
-```
-
-```php
-$registry->bind('validator', Validator::class);
-
-$v1 = $registry->make('validator');
-$v2 = $registry->make('validator');
-// $v1 !== $v2  — completely independent instances
-```
-
-Use for stateless, disposable objects where shared state would be a bug: validators, form request objects, DTOs, value objects.
-
----
-
-### `make()`
-
-Resolve a binding by key and return the object.
-
-```php
-$auth = $registry->make('auth');
-```
-
-**Resolution order:**
-
-```
-1. Pre-bound instance      (instance())
-2. Cached singleton        (already resolved on a prior make())
-3. Singleton binding       → build, cache, return
-4. Transient binding       → build fresh, return (no cache)
-5. Bare class name         → attempt direct auto-wire if class exists
-6. RelayException          → nothing matched
-```
-
----
-
-### `has()`
-
-Check whether a key has any binding registered.
-
-```php
-if ($registry->has('payment')) {
-    $gateway = $registry->make('payment');
-}
-```
-
----
-
-### `forgetInstance()`
-
-Clear a cached singleton instance, forcing re-resolution on the next `make()`.
-
-```php
-$registry->forgetInstance('date');
-$registry->singleton('date', Date::class, ['America/New_York']);
-
-// Next make('date') builds a fresh instance with the new args
-```
-
----
-
-### Lifetime Comparison
-
-| Method | Who builds it | How many instances | When built | Cached |
-|---|---|---|---|---|
-| `instance()` | You | 1 (yours) | Before registration | Yes — immediately |
-| `singleton()` | Registry | 1 | On first `make()` | Yes — after first use |
-| `bind()` | Registry | N (one per call) | On every `make()` | Never |
-
-> **Prefer `singleton()` over `instance()`** for most services. `singleton()` is **lazy** — if nothing ever calls `make('x')`, the object is never constructed. `instance()` is **eager** — the object exists the moment you register it, whether anything uses it or not.
+| Method | |
+|---|---|
+| `has(string $key): bool` | Whether the key has any binding |
+| `forgetInstance(string $key): static` | Drop a cached instance; the next `make()` builds a new one |
+| `bindings(): array` | Every bound key |
+| `classes(): array` | Key → concrete class (`'Closure'` for factories) |
 
 ---
 
 ## Auto-Wiring
 
-When a **class string** is registered (not a Closure), the registry uses PHP reflection to resolve constructor parameters automatically.
+When a class name is built, each constructor parameter is filled from the first of these that applies:
+
+1. a binding registered under the parameter's type;
+2. the type itself, if it's an existing class: built recursively;
+3. `$args`, by parameter name;
+4. `$args`, by position;
+5. the parameter's default value;
+6. `null`, if the parameter is nullable;
+7. otherwise `RelayException`, naming the parameter.
 
 ```php
-// Auth::__construct(Session $session, Config $config)
-// Both 'session' and 'config' are already in the registry → auto-wired
+class InvoiceService
+{
+    public function __construct(
+        private \App\Contracts\PaymentGateway $gateway, // bound above → make()
+        private \App\Support\TaxTable $taxes,           // concrete class → built
+        private string $currency = 'BDT',               // default
+    ) {}
+}
 
-$registry->singleton('session', Session::class);
-$registry->singleton('config',  Config::class);
-$registry->singleton('auth',    Auth::class);   // Session and Config injected automatically
+$registry->singleton('invoices', InvoiceService::class, ['currency' => 'USD']);
 ```
 
-**Per-parameter resolution order:**
+An **interface** has to be bound. It can't be built, so an unbound interface falls through to `$args`, the default, `null` or an exception.
 
-```
-1. Type-hinted class found in registry        → make() it
-2. Type-hinted class not in registry, exists  → build() recursively
-3. Primitive — named key in $args             → use it
-4. Primitive — positional in $args            → use it
-5. Has a default value                        → use it
-6. Nullable                                   → pass null
-7. Nothing matched                            → throw RelayException
-```
-
-**Mixed — auto-wire objects, supply primitives:**
-
-```php
-// Mailer::__construct(Config $config, string $driver)
-// Config is in the registry; 'smtp' cannot be auto-wired
-$registry->singleton('mailer', Mailer::class, ['smtp']);
-```
+> **In a Laika app, core services are bound by key, not by class.** They live under keys such as `'request'` and `'response'`. Type-hinting `Laika\Core\Http\Response` therefore builds a new `Response`, not the shared one. Call the relay statically instead (`Response::setStatus(201)`), or alias the class in a provider: `$this->registry->singleton(Response::class, fn ($r) => $r->make('response'));`
 
 ---
 
 ## RelayProvider
 
-The integration point for packages. Extend `RelayProvider` and implement `register()`. Optionally override `boot()`.
-
 ```php
-<?php
-
-namespace YourPackage;
+namespace App\Relay;
 
 use Laika\Relay\RelayProvider;
 
-class YourRelayProvider extends RelayProvider
+class Billing extends RelayProvider
 {
     public function register(): void
     {
-        // Bind your services here
-        $this->registry->singleton('your-service', YourService::class);
+        // Bind only.
+        $this->registry->singleton('billing', \App\Support\Billing::class);
     }
 
     public function boot(): void
     {
-        // Use other services here — everything is registered by now
-        $config = $this->registry->make('config');
-        $this->registry->make('your-service')->configure($config->get('your.key'));
+        // Every provider has registered; relays work; make() is safe.
+        $this->registry->make('billing')->setCurrency(config('app', 'currency'));
     }
 }
 ```
 
----
-
-### `register()`
-
-**Only call `bind()`, `singleton()`, or `instance()` here.** Do not call `make()`.
-
-When `register()` runs, other providers may not have registered their services yet. Calling `make()` at this stage risks a `RelayException` if the dependency is not yet bound.
-
-```php
-public function register(): void
-{
-    // ✅ Correct
-    $this->registry->singleton('payment', PaymentGateway::class);
-    $this->registry->bind('payment.invoice', Invoice::class);
-
-    // ❌ Wrong — 'config' may not be registered yet
-    $key = $this->registry->make('config')->get('payment.key');
-}
-```
-
----
-
-### `boot()`
-
-Called after **all** providers have run `register()`. Safe to call `make()` freely.
-
-```php
-public function boot(): void
-{
-    // ✅ Config-driven setup
-    $config  = $this->registry->make('config');
-    $gateway = $this->registry->make('payment');
-    $gateway->setApiKey($config->get('payment.stripe_key'));
-
-    // ✅ Attach event listeners
-    $events = $this->registry->make('events');
-    $events->listen('order.placed', SendPaymentRequestListener::class);
-
-    // ✅ Register routes
-    Http::group('/payment', function () {
-        Http::post('/charge',  'PaymentController@charge');
-        Http::post('/webhook', 'PaymentController@webhook');
-    });
-}
-```
-
----
-
-### `register()` vs `boot()`
-
 | | `register()` | `boot()` |
 |---|---|---|
-| Purpose | **Promise** a service exists | **Use** services that others promised |
-| When called | Before other providers boot | After ALL providers have registered |
-| Call `make()`? | ⚠️ Risky — others may not be ready | ✅ Safe — everything is registered |
-| Typical use | `singleton`, `bind`, `instance` | Config setup, routes, middleware, events |
+| Purpose | Bind services | Use services |
+| Runs | Once per provider, in registration order | After **every** provider has registered |
+| `$this->registry->make()` | Risky: later providers haven't registered | Safe |
+| Relay static calls (`Config::get()`) | **Throw** inside a Laika app: relays aren't connected until every `register()` has run | Work |
 
-> One-line rule: **`register()` = bind things. `boot()` = use things.**
+`$this->registry` is the `RelayRegistry`.
 
 ---
 
 ## ProviderRegistry
 
-Manages the full provider lifecycle. Register providers in any order — the two-phase approach guarantees correctness.
-
 ```php
 use Laika\Relay\ProviderRegistry;
 
 $providers = new ProviderRegistry($registry);
-
-// Register accepts class string or instance
-$providers->register(CoreRelayProvider::class);
-$providers->register(new PaymentRelayProvider($registry));
-
-// Boot all providers after all register() calls
-$providers->boot();
+$providers->register(Billing::class);      // class name or instance; register() runs now
+$providers->boot();                        // every boot(), in registration order
 ```
 
-**Duplicate registrations are silently ignored** — registering the same provider class twice is safe.
-
-**`has()`** — check if a provider is registered:
-
-```php
-if ($providers->has(PaymentRelayProvider::class)) {
-    // ...
-}
-```
+| Method | |
+|---|---|
+| `register(string\|RelayProvider $provider): static` | Instantiate (with the registry) and call `register()`. Registering the same class again is ignored. |
+| `boot(): void` | Call `boot()` on every registered provider |
+| `has(string $class): bool` | Whether that provider class is registered |
+| `providers(): array` | The provider instances, in order |
 
 ---
 
-## Bootstrap
+## Standalone Bootstrap
 
-Complete application bootstrap sequence:
+Outside Laika, wire it up the same way laika-core does:
 
 ```php
-<?php
-
 use Laika\Relay\Relay;
 use Laika\Relay\RelayRegistry;
 use Laika\Relay\ProviderRegistry;
-use Laika\Relay\Relays\CoreRelayProvider;
 
-// 1. Build the container
 $registry  = new RelayRegistry();
-
-// 2. Build the provider manager
 $providers = new ProviderRegistry($registry);
 
-// 3. Register the Laika core provider (always first)
-$providers->register(CoreRelayProvider::class);
+$providers->register(\App\Relay\Billing::class);
+$providers->register(\App\Relay\Payments::class);
 
-// 4. Register providers declared in config/app.php
-foreach (config('app.providers') as $providerClass) {
-    $providers->register($providerClass);
-}
-
-// 5. Boot all providers (runs after all register() calls are complete)
+Relay::setRegistry($registry);   // once; relays work from here on
 $providers->boot();
-
-// 6. Wire the registry into the Relay system
-Relay::setRegistry($registry);
 ```
 
-`config/app.php`:
-
-```php
-return [
-    'providers' => [
-        // Third-party packages
-        Acme\LaikaPayment\PaymentRelayProvider::class,
-        Acme\LaikaBarcode\BarcodeRelayProvider::class,
-    ],
-];
-```
+`CoreProviders` binds laika-core classes, so only register it where laika-core is installed.
 
 ---
 
-## Third-Party Integration
+## Shipping Services From a Package
 
-This is how an external package integrates with Laika.
+A package declares a directory of providers as a `relays` resource in its `composer.json`. Laika discovers it and registers every `RelayProvider` in it, after the core providers and before the app's:
 
-### 1. Create a RelayProvider
-
-```php
-<?php
-
-namespace Acme\LaikaPayment;
-
-use Laika\Relay\RelayProvider;
-
-class PaymentRelayProvider extends RelayProvider
-{
-    public function register(): void
-    {
-        $this->registry->singleton('payment',         PaymentGateway::class);
-        $this->registry->singleton('payment_webhook', WebhookHandler::class);
-        $this->registry->bind('payment_invoice',      Invoice::class);
-    }
-
-    public function boot(): void
-    {
-        $key = $this->registry->make('config')->get('stripe_key');
-        $this->registry->make('payment')->setApiKey($key);
+```json
+"extra": {
+    "laika": {
+        "resources": {
+            "relays": {
+                "path": "src/Relay",
+                "namespace": "Acme\\Payment\\Relay",
+                "contract": "Laika\\Relay\\RelayProvider"
+            }
+        }
     }
 }
 ```
 
-### 2. Ship a Relay class (optional but recommended)
+Ship a relay class next to it so users get a static API:
 
 ```php
-<?php
-
-namespace Acme\LaikaPayment\Relay;
+namespace Acme\Payment\Service;
 
 use Laika\Relay\Relay;
 
 /**
  * @method static string charge(int $amount, string $currency)
  * @method static bool   verify(string $token)
- * @method static array  history(int $limit = 10)
  */
 class Payment extends Relay
 {
     protected static function getRelayAccessor(): string
     {
-        return 'payment';
+        return 'acme.payment';
     }
 }
 ```
 
-### Full flow
-
-```
-composer require acme/laika-payment
-        ↓
-Add PaymentRelayProvider to config/app.php
-        ↓
-Bootstrap: ProviderRegistry calls register() → binds 'payment'
-        ↓
-Bootstrap: ProviderRegistry calls boot()     → configures with API key
-        ↓
-Relay::setRegistry($registry)
-        ↓
-Payment::charge() → __callStatic → make('payment') → PaymentGateway::charge()
-```
+Prefix your keys (`acme.payment`) so they can't collide with core keys or other packages.
 
 ---
 
-## Relay — The Static Proxy
+## Relays
 
-### Creating a Relay Class
+### Creating a Relay
 
-Extend `Relay`, implement `getRelayAccessor()`, and document every proxied method with `@method static` tags.
+Extend `Relay`, return the registry key from `getRelayAccessor()`, and document the forwarded methods with `@method static` tags for IDE autocomplete:
 
 ```php
-<?php
-
-declare(strict_types=1);
-
-namespace Laika\Relay\Relays;
+namespace App\Service;
 
 use Laika\Relay\Relay;
 
 /**
- * @method static bool   attempt(array $credentials)
- * @method static bool   check()
- * @method static bool   guest()
- * @method static mixed  user()
- * @method static void   logout()
+ * @method static float total(array $items)
+ * @method static \App\Support\Billing setCurrency(string $code)
  */
-class Auth extends Relay
+class Billing extends Relay
 {
     protected static function getRelayAccessor(): string
     {
-        return 'auth';
+        return 'billing';
     }
 }
 ```
-
-**`@method` tag rules:**
-
-- Always include `static` — every call through a Relay is a static call.
-- Import types with `use` statements — same as real code.
-- Union return types are valid: `@method static Item|Builder end()`
-- Array types are valid: `@method static Item[] all()`
-- FQCNs or short names both work (short names require `use`).
-
-```php
-use Laika\Nav\Helper\Item;
-use Laika\Nav\Builder;
-
-/**
- * @method static Item|Builder  end()
- * @method static Item[]        all()
- * @method static Item|null     find(string $name)
- */
-```
-
----
 
 ### Using a Relay
 
-Import the **Relay class**, not the underlying service class.
+Import the relay, not the class behind it:
 
 ```php
-// ✅ Correct — imports the Relay proxy
-use Laika\Service\StaffAuth;
-use Laika\Service\ClientAuth;
+use App\Service\Billing;
 use Laika\Service\Config;
-...
 
-if (Auth::check()) {
-    $name = Config::get('app', 'name');
-    Session::set('last_page', '/dashboard');
-}
+$total = Billing::total($cart);
+$name  = Config::get('app', 'name');
 ```
+
+Calling a method the instance doesn't have throws `RelayException`.
+
+**Chaining** works whenever the target returns an object: the first call goes through the relay, the rest run on the returned object.
 
 ```php
-// ❌ Wrong — imports the real class, static calls fail
-use Laika\Core\Auth\Auth;
+use Laika\Service\Date;
 
-Auth::check(); // Fatal: Non-static method cannot be called statically
+Date::now()->setTimezone('Asia/Dhaka')->modify('+7 days')->format('d M Y');
 ```
 
-You do **not** need a Relay class to access a service. The registry is always available:
+### Static Helpers on Every Relay
 
-```php
-// Direct registry access — no Relay class needed
-$session = Relay::getRegistry()->make('session');
-$session->set('user_id', 42);
-```
-
----
-
-### Method Chaining
-
-Chaining works automatically. The first static call goes through `__callStatic` and returns whatever the underlying method returns. If that's `$this`, subsequent calls are normal instance calls.
-
-```php
-// Entire chain — first call is static, rest are instance
-Date::now()
-    ->setTimezone('Asia/Dhaka')
-    ->modify('+7 days')
-    ->setFormat('d M Y')
-    ->format();
-
-Date::fromFormat('d/m/Y', '01/04/2025')
-    ->toUtc()
-    ->toIso8601();
-
-Date::setTimestamp(time())
-    ->modify('+1 hour')
-    ->humanDiff();
-```
-
-Chaining ends when a method returns a non-object (string, int, array). Do not chain after terminal methods like `format()`, `getTimestamp()`, or `toArray()`.
-
----
-
-### Switching Instances at Runtime
-
-Use `swap()` to replace the resolved instance for a specific Relay — for example, switching auth guard in middleware.
-
-```php
-<?php
-
-namespace App\Middleware;
-
-use Laika\Core\Auth\Auth as AuthService;
-use Laika\Service\Auth;
-
-class AdminMiddleware
-{
-    public function handle(): void
-    {
-        Auth::swap(new AuthService(guard: 'admin', table: 'admins'));
-        // All subsequent Auth:: calls now resolve against the admin guard
-    }
-}
-```
-
-Or re-register via the registry for a cleaner approach:
-
-```php
-Relay::getRegistry()->forgetInstance('auth');
-Relay::getRegistry()->singleton('auth', AuthService::class, ['admin', 'admins']);
-```
+| Method | |
+|---|---|
+| `X::relayRoot(): object` | The real underlying instance |
+| `X::swap(object $instance): void` | Bind a different instance under this relay's key |
+| `X::clearResolvedInstance(): void` | Forget the cached instance; the next call rebuilds it (and undoes a `swap()`) |
+| `Relay::setRegistry(RelayRegistry $registry): void` | Connect the registry. Once only. |
+| `Relay::getRegistry(): RelayRegistry` | The connected registry |
+| `Relay::swapRegistry(RelayRegistry $registry): void` | Replace the registry. Tests only. |
+| `Relay::bindings()` / `Relay::classes()` | The registry's keys / key → class map |
 
 ---
 
 ## Testing
 
-### Inject a mock for one test
+Swap in a fake for one test:
 
 ```php
-use Laika\Service\Auth;
+use App\Service\Billing;
 
 protected function setUp(): void
 {
-    $mock = $this->createMock(\Laika\Core\Auth\Auth::class);
-    $mock->method('check')->willReturn(true);
-
-    Auth::swap($mock);
+    Billing::swap(new FakeBilling());
 }
 
 protected function tearDown(): void
 {
-    Auth::clearResolvedInstance();
-}
-
-public function test_dashboard_requires_auth(): void
-{
-    $this->assertTrue(Auth::check()); // uses mock
+    Billing::clearResolvedInstance();
 }
 ```
 
-### Replace the entire registry for full isolation
+Or isolate a test completely with its own registry:
 
 ```php
 use Laika\Relay\Relay;
@@ -722,41 +370,39 @@ use Laika\Relay\RelayRegistry;
 
 protected function setUp(): void
 {
-    $testRegistry = new RelayRegistry();
-    $testRegistry->instance('auth',    $this->createMock(Auth::class));
-    $testRegistry->instance('session', $this->createMock(Session::class));
-    $testRegistry->instance('config',  $this->createMock(Config::class));
+    $registry = new RelayRegistry();
+    $registry->instance('billing', new FakeBilling());
 
-    Relay::swapRegistry($testRegistry);
+    Relay::swapRegistry($registry);
 }
 ```
 
-> `swapRegistry()` is intentionally separate from `setRegistry()` so that accidental double-calls in production code throw a `RelayException`, while tests can swap freely.
+`swapRegistry()` is separate from `setRegistry()` on purpose: a second `setRegistry()` in application code throws, while tests can swap freely.
+
+Singletons live for the whole process. In a long-running worker, reset request-bound services between jobs with `X::clearResolvedInstance()`.
 
 ---
 
 ## Exceptions
 
-All errors throw `Laika\Relay\Exceptions\RelayException`.
+Everything throws `Laika\Relay\Exceptions\RelayException`:
 
-| Situation | Message |
+| Situation | Message starts with |
 |---|---|
-| `setRegistry()` called more than once | `RelayRegistry has already been set.` |
-| `getRegistry()` before `setRegistry()` | `RelayRegistry has not been set.` |
-| No binding found for key | `No binding registered for [key].` |
-| Class not found during build | `Class [ClassName] not found.` |
-| Unresolvable constructor parameter | `Cannot resolve parameter [$name] for [ClassName].` |
-| Method not found on resolved instance | `Method [method] does not exist on [ClassName].` |
-| RelayProvider class not found | `RelayProvider [ClassName] class not found.` |
-| Provider does not extend RelayProvider | `[ClassName] must extend Laika\Relay\RelayProvider.` |
+| `setRegistry()` called twice | `RelayRegistry has already been set.` |
+| A relay used before `setRegistry()` | `RelayRegistry has not been set.` |
+| Nothing bound under the key | `No binding registered for [key].` |
+| A bound class doesn't exist | `Class [ClassName] not found.` |
+| A constructor can't be invoked (e.g. it isn't public) | `Failed to build [ClassName]: …` |
+| A constructor parameter can't be resolved | `Cannot resolve parameter [$name] for [ClassName].` |
+| The relay's instance lacks the method | `Method [method] does not exist on [ClassName].` |
+| A provider class doesn't exist | `RelayProvider [ClassName] class not found.` |
+| A provider doesn't extend `RelayProvider` | `[ClassName] must extend Laika\Relay\RelayProvider.` |
 
 ---
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
+MIT. See [LICENSE](LICENSE).
 
-**Author:** Showket Ahmed
-**Email:** riyadhtayf@gmail.com
-**Package:** `laikait/laika-relay`
-**GitHub:** [laikait/laika-relay](https://github.com/laikait/laika-relay)
+**Author:** Showket Ahmed · riyadhtayf@gmail.com · [laikait/laika-relay](https://github.com/laikait/laika-relay)

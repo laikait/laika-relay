@@ -32,7 +32,7 @@ use Laika\Relay\Exceptions\RelayException;
  * Example:
  *   Session::get('user_id');
  *   Auth::check();
- *   Config::get('app.name');
+ *   Config::get('app', 'name');
  */
 abstract class Relay
 {

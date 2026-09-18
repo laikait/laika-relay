@@ -28,16 +28,11 @@ use Laika\Relay\Exceptions\RelayException;
  *   $registry  = new RelayRegistry();
  *   $providers = new ProviderRegistry($registry);
  *
- *   $providers->register(CoreRelayProvider::class);
- *   $providers->register(AuthRelayProvider::class);
+ *   $providers->register(CoreProviders::class);
+ *   $providers->register(PaymentRelayProvider::class);
  *
- *   foreach (config('app.providers') as $provider) {
- *       $providers->register($provider);
- *   }
- *
+ *   Relay::setRegistry($registry);   // relays work from here on
  *   $providers->boot();
- *
- *   Relay::setRegistry($registry);
  */
 class ProviderRegistry
 {

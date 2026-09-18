@@ -56,11 +56,13 @@ use Laika\Core\Helper\PhpMetadataParser;
  * This provider is registered automatically by the framework during bootstrap.
  * You do not need to add it to your config/app.php providers array.
  *
- * Services registered:
+ * Services registered include (see register() for the full list):
  *   - config   → Laika\Core\Helper\Config
- *   - session  → Laika\Core\Session\Session
  *   - date     → Laika\Core\Helper\Date
- *   - csrf     → Laika\Core\Csrf\Csrf
+ *   - csrf     → Laika\Core\Http\CSRF
+ *   - init     → Laika\Core\Helper\Init (session driver shortcuts)
+ *
+ * Sessions are not a registered service: use Laika\Session\Session directly.
  */
 class CoreProviders extends RelayProvider
 {
